@@ -22,7 +22,12 @@ const client = new Client({
   ]
 });
 
-const TOKEN =  process.env.TOKEN;
+const TOKEN = process.env.TOKEN || process.env.DISCORD_TOKEN;
+
+if (!TOKEN) {
+  console.error("Missing Discord bot token. Add it as a secret named TOKEN.");
+  process.exit(1);
+}
 
 // Game aliases
 const gameMap = {
@@ -223,4 +228,7 @@ client.on('messageCreate', async (msg) => {
   }
 });
 
-client.login(TOKEN);
+client.login(TOKEN).catch((err) => {
+  console.error("Failed to log in to Discord:", err.message);
+  process.exit(1);
+});
